@@ -3,15 +3,20 @@ public class Transaction {
     private long block;
     private String from;
     private String to;
+    private String assetName;
+    private long amount;
     private Long timeStamp;
     private Boolean status;
     private String type;
+    private long assetAmount;
 
-    public Transaction(String hash, long block, String from, String to, Long timeStamp, Boolean status, String type) {
+    public Transaction(String hash, long block, String from, String to, String assetName, long amount, Long timeStamp, Boolean status, String type) {
         this.hash = hash;
         this.block = block;
         this.from = from;
         this.to = to;
+        this.assetName = assetName;
+        this.amount = amount;
         this.timeStamp = timeStamp;
         this.status = status;
         this.type = type;
@@ -53,6 +58,22 @@ public class Transaction {
         this.to = to;
     }
 
+    public String getAssetName() {
+        return assetName;
+    }
+
+    public void setAssetName(String assetName) {
+        this.assetName = assetName;
+    }
+
+    public long getAmount() {
+        return amount;
+    }
+
+    public void setAmount(long amount) {
+        this.amount = amount;
+    }
+
     public Long getTimeStamp() {
         return timeStamp;
     }
@@ -75,5 +96,13 @@ public class Transaction {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public long getAssetAmount() {
+        return assetAmount;
+    }
+
+    public void setAssetAmount(long assetAmount) {
+        this.assetAmount = assetAmount;
     }
 }

@@ -5,42 +5,59 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class TronBot extends TelegramLongPollingBot {
     private SendMessage sendMessage = new SendMessage();
+    private final String botUserName = "";
+    private final String botToken = "";
 
     @Override
     public void onUpdateReceived(Update update) {
-        TX tx = new TX();
+        Bot bot = new Bot();
 
         if (update.getMessage().getText().equalsIgnoreCase("/start")){
             sendMessage.setChatId(update.getMessage().getChatId())
-                    .enableHtml(true)
-                    .setText("Welcome @"+ update.getMessage().getFrom().getUserName() + " this is a test bot.\n" +
-                           "\n<b>Example</b>" +
-                            "/tx txhash - to get transaction info");
-        } else if (update.getMessage().getText().startsWith("/tx")){
-            tx.getTransactionDetails(update);
+                    .setText("Welcome @"+ update.getMessage().getFrom().getUserName() + ", See /help for a list of commands.");
             return;
-        } else {
-            if (!update.getMessage().isGroupMessage()) {
+        } else if(update.getMessage().getText().startsWith("/help")){
+            bot.getHelp(update);
+            return;
+        }
+        else if (update.getMessage().getText().startsWith("/wallet")) {
+            bot.showAccount(update);
+            return;
+        }
+
+        else if (update.getMessage().getText().startsWith("/tx")){
+            bot.getTransactionDetails(update);
+            return;
+        }
+        else if(update.getMessage().getText().equalsIgnoreCase("/info")){
+            bot.getInfo(update);
+            return;
+        }
+        else {
+            if (update.getMessage().isUserMessage()){
                 sendMessage.setChatId(update.getMessage().getChatId())
-                        .setChatId("Invalid command.");
+                        .setText("Invalid command. See /help");
+                System.out.println("Invalid command.");
             }
         }
 
         try {
-            execute(sendMessage);
+            if (sendMessage.getChatId() != null) {
+                execute(sendMessage);
+            }
         } catch (TelegramApiException e){
-            e.printStackTrace();
+           e.printStackTrace();
         }
     }
 
     @Override
     public String getBotToken() {
-        return "725652429:AAE5IQdo55LNXDKxYhKa87O4Y-JG4WtJPz4";
+        return botToken;
     }
 
     @Override
     public String getBotUsername(){
-        return "Tronex_sandbot";
+        return botUserName;
     }
 
 
