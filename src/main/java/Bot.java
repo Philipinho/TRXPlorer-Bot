@@ -36,9 +36,7 @@ public class Bot extends TronBot {
 
                 if (hash.length() == 64 ) {
                     if (tx.getType().equalsIgnoreCase("TransferAssetContract")){
-                        sendMessage.setChatId(update.getMessage().getChatId())
-                                .setReplyToMessageId(update.getMessage().getMessageId())
-                                .setText("Sent " + tx.getAmount() + " LoveHearts to " + tx.getTo() + ".");
+                        assetTransferMessage(update, tx);
                     } else {
 
                        transactionMessage(update, tx);
@@ -99,24 +97,21 @@ public class Bot extends TronBot {
 
     public void getInfo(Update update){
 
-        if (update.getMessage().isReply() && update.getMessage().getText().equalsIgnoreCase("/info")
+        if (update.getMessage().isReply() && update.getMessage().getText().startsWith("/info")
                 && update.getMessage().getReplyToMessage().getText().contains("trxplorer.io/address/")){
             String address = update.getMessage().getReplyToMessage().getText().split("/")[4];
 
             Account account = getAccountInfo(address);
-            System.out.println(account.getAddress());
 
             accountMessage(update,account);
 
-
-        }  if (update.getMessage().isReply() && update.getMessage().getText().equalsIgnoreCase("/info")
+        }  if (update.getMessage().isReply() && update.getMessage().getText().startsWith("/info")
                 &&  update.getMessage().getReplyToMessage().getText().startsWith("T") && update.getMessage().getReplyToMessage().getText().length() == 34){
             String address = update.getMessage().getReplyToMessage().getText();
 
             Account account = getAccountInfo(address);
 
             accountMessage(update, account);
-
 
         } else if(update.getMessage().isReply() && update.getMessage().getText().equalsIgnoreCase("/info")
                 && update.getMessage().getReplyToMessage().getText().contains("trxplorer.io/tx/")){
@@ -126,9 +121,7 @@ public class Bot extends TronBot {
                 Transaction tx = txInfo(hash);
 
                     if (tx.getType().equalsIgnoreCase("TransferAssetContract")){
-                        sendMessage.setChatId(update.getMessage().getChatId())
-                                .setReplyToMessageId(update.getMessage().getMessageId())
-                                .setText("Sent " + tx.getAmount() + " LoveHearts to " + tx.getTo() + ".");
+                        assetTransferMessage(update, tx);
                     } else {
                         transactionMessage(update, tx);
                     }
@@ -140,9 +133,7 @@ public class Bot extends TronBot {
             Transaction tx = txInfo(hash);
 
             if (tx.getType().equals("TransferAssetContract")){
-                sendMessage.setChatId(update.getMessage().getChatId())
-                        .setReplyToMessageId(update.getMessage().getMessageId())
-                        .setText("Sent " + tx.getAmount() + " LoveHearts to " + tx.getTo() + ".");
+                assetTransferMessage(update, tx);
             }
 
             else {
@@ -175,6 +166,12 @@ public class Bot extends TronBot {
                         "\n<b>Date: </b>" + Utils.convertTimestamp(tx.getTimeStamp()) +
                         "\n<b>Confirmed: </b>" + Utils.checkConfirmation(tx.getStatus()) +
                         "\n<b>Type: </b>" + tx.getType());
+    }
+
+    private void assetTransferMessage(Update update, Transaction tx){
+        sendMessage.setChatId(update.getMessage().getChatId())
+                .setReplyToMessageId(update.getMessage().getMessageId())
+                .setText("Sent " + tx.getAmount() + " " + tx.getAssetName() + " " + tx.getTo() + ".");
     }
 
     private void accountMessage(Update update, Account account){
