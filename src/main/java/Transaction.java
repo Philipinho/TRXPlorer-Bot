@@ -10,7 +10,7 @@ public class Transaction {
     private String type;
     private long assetAmount;
 
-    public Transaction(String hash, long block, String from, String to, String assetName, long amount, Long timeStamp, Boolean status, String type) {
+    public Transaction(String hash, long block, String from, String to, String assetName, long amount, Long timeStamp, Boolean status, String type, long assetAmount) {
         this.hash = hash;
         this.block = block;
         this.from = from;
@@ -20,6 +20,7 @@ public class Transaction {
         this.timeStamp = timeStamp;
         this.status = status;
         this.type = type;
+        this.assetAmount = assetAmount;
     }
 
     public Transaction(){

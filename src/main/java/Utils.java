@@ -5,14 +5,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Utils {
-    private static String tx_confirmed = EmojiParser.parseToUnicode(":white_check_mark:");
-    private static String not_confirmed = EmojiParser.parseToUnicode(":x:");
+    private static String txConfirmed = EmojiParser.parseToUnicode(":white_check_mark:");
+    private static String txNotConfirmed = EmojiParser.parseToUnicode(":x:");
 
     public static String convertToDouble(long value){
-
         DecimalFormat formatter = new DecimalFormat("#,###");
-        int divisor = 1000000;
-        double amount = (double) value/divisor;
+        int SUN_PER_TRX = 1000000;
+        double amount = (double) value/SUN_PER_TRX;
         return formatter.format(amount);
     }
 
@@ -22,21 +21,17 @@ public class Utils {
     }
 
     public static String checkConfirmation(boolean status){
-        String emoji = "";
+        String emoji;
         if (status){
-            emoji = tx_confirmed;
+            emoji = txConfirmed;
         } else {
-            emoji = not_confirmed;
+            emoji = txNotConfirmed;
         }
         return emoji;
     }
 
     public static String convertTimestamp(long timestamp){
-
-
-       String date = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
+       return new SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
                 .format(new Date(timestamp));
-        return date;
     }
-
 }

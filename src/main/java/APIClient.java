@@ -5,10 +5,10 @@ import okhttp3.Response;
 import java.io.IOException;
 
 public class APIClient {
-    private  final String API_URL = "https://api.trxplorer.io/v2/";
+    private final String API_URL = "https://api.trxplorer.io/v2/";
     private OkHttpClient httpClient = new OkHttpClient();
 
-    public  String doGETRequest(String endPoint){
+    public String doGETRequest(String endPoint){
         final StringBuilder result = new StringBuilder();
 
         Request request = new Request.Builder()

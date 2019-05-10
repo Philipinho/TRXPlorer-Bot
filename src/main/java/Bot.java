@@ -25,7 +25,6 @@ public class Bot extends TronBot {
         } catch (TelegramApiException e){
             e.printStackTrace();
         }
-
     }
 
     public  void getTransactionDetails(Update update){
@@ -38,21 +37,18 @@ public class Bot extends TronBot {
                     if (tx.getType().equalsIgnoreCase("TransferAssetContract")){
                         assetTransferMessage(update, tx);
                     } else {
-
                        transactionMessage(update, tx);
                     }
                 } else {
                     sendMessage.setChatId(update.getMessage().getChatId())
                             .setReplyToMessageId(update.getMessage().getMessageId())
                             .setText("Invalid hash provided.");
-                    System.out.println("Invalid hash provided.");
                 }
             } else {
                 sendMessage.setChatId(update.getMessage().getChatId())
                         .enableMarkdown(true)
                         .setReplyToMessageId(update.getMessage().getMessageId())
                         .setText("Incomplete command. Use: ``` /tx HASH```");
-                System.out.println("Incomplete command.");
             }
 
         }
@@ -78,14 +74,12 @@ public class Bot extends TronBot {
                     sendMessage.setChatId(update.getMessage().getChatId())
                             .setReplyToMessageId(update.getMessage().getMessageId())
                             .setText("Invalid Tron address provided.");
-                    System.out.println("Invalid Tron address provided.");
                 }
             } else {
                 sendMessage.setChatId(update.getMessage().getChatId())
                         .enableMarkdown(true)
                         .setReplyToMessageId(update.getMessage().getMessageId())
                         .setText("Incomplete command. Use: ``` /wallet ADDRESS```");
-                System.out.println("Incomplete command.");
             }
         }
         try {
@@ -113,7 +107,7 @@ public class Bot extends TronBot {
 
             accountMessage(update, account);
 
-        } else if(update.getMessage().isReply() && update.getMessage().getText().equalsIgnoreCase("/info")
+        } else if(update.getMessage().isReply() && update.getMessage().getText().startsWith("/info")
                 && update.getMessage().getReplyToMessage().getText().contains("trxplorer.io/tx/")){
 
                 String hash = update.getMessage().getReplyToMessage().getText().split("/")[4];
@@ -125,7 +119,7 @@ public class Bot extends TronBot {
                     } else {
                         transactionMessage(update, tx);
                     }
-        } else if(update.getMessage().isReply() && update.getMessage().getText().equalsIgnoreCase("/info")
+        } else if(update.getMessage().isReply() && update.getMessage().getText().startsWith("/info")
                 && update.getMessage().getReplyToMessage().getText().length() == 64){
 
             String hash = update.getMessage().getReplyToMessage().getText();
@@ -144,7 +138,6 @@ public class Bot extends TronBot {
                     .enableMarkdown(true)
                     .setReplyToMessageId(update.getMessage().getMessageId())
                     .setText("Incomplete command. Please use /info in a reply to a valid Tron transaction hash or wallet address.");
-            System.out.println("Incomplete command.");
         }
 
         try{
@@ -153,7 +146,6 @@ public class Bot extends TronBot {
             e.printStackTrace();
         }
     }
-
 
     private void transactionMessage(Update update, Transaction tx){
         sendMessage.setChatId(update.getMessage().getChatId())
@@ -170,8 +162,9 @@ public class Bot extends TronBot {
 
     private void assetTransferMessage(Update update, Transaction tx){
         sendMessage.setChatId(update.getMessage().getChatId())
+                .enableHtml(true)
                 .setReplyToMessageId(update.getMessage().getMessageId())
-                .setText("Sent " + tx.getAmount() + " " + tx.getAssetName() + " " + tx.getTo() + ".");
+                .setText("Sent " + tx.getAmount() + " <b>" + tx.getAssetName() + "</b> to " + tx.getTo() + ".");
     }
 
     private void accountMessage(Update update, Account account){
@@ -186,7 +179,6 @@ public class Bot extends TronBot {
         long frozenBalance = 0;
         try {
             JSONObject jsonObject = (JSONObject) jsonParser.parse(api.doGETRequest("account/" + walletAddress ));
-            System.out.println(jsonObject);
             String name = (String) jsonObject.get("name");
             String address = (String) jsonObject.get("address");
             long balance = (long) jsonObject.get("balance");
@@ -211,13 +203,11 @@ public class Bot extends TronBot {
         Transaction tx = new Transaction();
 
         try {
-
             String assetName = "";
             long amount = 0;
             long assetAmount = 0;
 
             JSONObject jsonObject = (JSONObject) jsonParser.parse(api.doGETRequest("transaction/" + hash));
-            System.out.println(jsonObject);
 
             String txhash = (String) jsonObject.get("hash");
             long block = (long) jsonObject.get("block");
@@ -250,7 +240,6 @@ public class Bot extends TronBot {
                 }
 
                     JSONArray array = (JSONArray) jsonParser.parse(api.doGETRequest("transaction/" + hash + "/trc20transfers"));
-                    System.out.println(array);
                     for (Object in : array) {
                         JSONObject jsonValue = (JSONObject) in;
                         assetName = (String) jsonValue.get("token").toString().split(":")[1];

@@ -5,8 +5,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class TronBot extends TelegramLongPollingBot {
     private SendMessage sendMessage = new SendMessage();
-    private final String botUserName = "";
-    private final String botToken = "";
+    private final String botUserName = "TELEGRAM-BOT-USERNAME";
+    private final String botToken = "TELEGRAM-BOT-TOKEN";
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -15,7 +15,7 @@ public class TronBot extends TelegramLongPollingBot {
         if (update.getMessage().getText().equalsIgnoreCase("/start")){
             sendMessage.setChatId(update.getMessage().getChatId())
                     .setText("Welcome @"+ update.getMessage().getFrom().getUserName() + ", See /help for a list of commands.");
-            return;
+
         } else if(update.getMessage().getText().startsWith("/help")){
             bot.getHelp(update);
             return;
@@ -29,7 +29,7 @@ public class TronBot extends TelegramLongPollingBot {
             bot.getTransactionDetails(update);
             return;
         }
-        else if(update.getMessage().getText().equalsIgnoreCase("/info")){
+        else if(update.getMessage().getText().startsWith("/info")){
             bot.getInfo(update);
             return;
         }
@@ -37,7 +37,6 @@ public class TronBot extends TelegramLongPollingBot {
             if (update.getMessage().isUserMessage()){
                 sendMessage.setChatId(update.getMessage().getChatId())
                         .setText("Invalid command. See /help");
-                System.out.println("Invalid command.");
             }
         }
 
@@ -46,7 +45,7 @@ public class TronBot extends TelegramLongPollingBot {
                 execute(sendMessage);
             }
         } catch (TelegramApiException e){
-           e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -59,6 +58,5 @@ public class TronBot extends TelegramLongPollingBot {
     public String getBotUsername(){
         return botUserName;
     }
-
 
 }
